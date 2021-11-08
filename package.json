@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "inquirer": "^8.2.0",
+    "jest": "^27.3.1",
+    "mysql2": "^2.3.3-rc.0"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "cms_employee_tracker",
+  "description": "",
+  "version": "1.0.0",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asadg7/CMS_Employee_Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/asadg7/CMS_Employee_Tracker/issues"
+  },
+  "homepage": "https://github.com/asadg7/CMS_Employee_Tracker#readme"
+}
