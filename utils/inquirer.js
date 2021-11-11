@@ -126,8 +126,6 @@ const deleteEmployeeQuestion = [
     }
 ];
 
-const 
-
 const promptUser = () => {
     
 }
