@@ -307,7 +307,7 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-    let employees = ["None"];
+    let employees = ["None", ];
     let roles = [];
 
     let roleSql = `SELECT * FROM role`;
@@ -317,16 +317,16 @@ const addEmployee = () => {
         for (i = 0; i < data.length; i++) {
             roles.push(data[i].title);
         };
+    });
 
-        let employeeSql = `SELECT * FROM employee`;
-        db.query(employeeSql, (data, err) => {
-            if (err) throw err;
+    let employeeSql = `SELECT * FROM employee`;
+    db.query(employeeSql, (data, err) => {
+        if (err) throw err;
 
-            for (i = 0; i < data.length; i++) {
-                let employeeName = data[i].first_name + " " + data[i].last_name;
-                employees.push(employeeName);
-            };
-        });
+        for (i = 0; i < data.length; i++) {
+            let employeeName = data[i].first_name + " " + data[i].last_name;
+            employees.push(employeeName);
+        };
     });
 
     inquirer.prompt([
