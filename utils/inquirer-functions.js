@@ -59,5 +59,27 @@ const addEmployee = function (first_name, last_name, role_id, manager_id) {
     let roles = [];
     let employees = [];
 
-    
+    const rolesSql = `SELECT * FROM role`;
+    connection.query(rolesSql, (err, data) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        for (i = 0; i < data.length; i++) {
+            roles.push(data[i].title);
+        }
+    });
+
+    const employeesSql = `SELECT * FROM employee`;
+    connection.query(employeesSql, (data, err) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        for (i = 0; i < data.length; i++) {
+            employees.push(data[i].first_name);
+        }
+    });
 }
