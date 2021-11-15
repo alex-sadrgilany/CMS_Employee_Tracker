@@ -327,7 +327,7 @@ const addRole = () => {
                     return true;
                 }
                 else {
-                    console.log(chalk.red("You must enter a role!"));
+                    console.log('\x1b[31m', "You must enter a role!");
                 }
             }
         },
@@ -337,10 +337,10 @@ const addRole = () => {
             message: "What is the salary of the new Role?",
             validate: salaryInput => {
                 if (isNaN(salaryInput)) {
-                    console.log(chalk.red("You must enter an integer with a maximum of 8 digits plus 2 decimals if desired!"));
+                    console.log('\x1b[31m', "You must enter an integer with a maximum of 8 digits plus 2 decimals if desired!");
                 }
                 else if (salaryInput > 99999999.99) {
-                    console.log(chalk.red("The maximum salary you can enter is 99999999.99!"));
+                    console.log('\x1b[31m', "The maximum salary you can enter is 99999999.99!");
                 }
                 else {
                     return true;
@@ -409,7 +409,7 @@ const addEmployee = () => {
                     return true;
                 }
                 else {
-                    console.log(chalk.red("You must enter a first name!"));
+                    console.log('\x1b[31m', "You must enter a first name!");
                 }
             }
         },
@@ -422,7 +422,7 @@ const addEmployee = () => {
                     return true;
                 }
                 else {
-                    console.log(chalk.red("You must enter a last name!"));
+                    console.log('\x1b[31m', "You must enter a last name!");
                 }
             }
         },

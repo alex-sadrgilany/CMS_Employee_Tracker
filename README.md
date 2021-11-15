@@ -10,11 +10,7 @@ Below is a walkthrough video that will show anybody who wishes to use this appli
 
 Walkthrough Video:
 
-
-
-Walkthrough Video YouTube Backup:
-
-
+https://www.youtube.com/watch?v=JTPSB-yj5jk
 
 ## Table of Contents
 
@@ -26,17 +22,21 @@ Walkthrough Video YouTube Backup:
 
 ## Screenshots
 
-Landing Page
+View
 
-![Website Landing Page](./assets/images/landingpage_screenshot.PNG)
+![View Menu](./assets/images/view_screenshot.PNG)
 
-Saved Notes Displayed
+Add
 
-![Displayed Notes](./assets/images/notes_screenshot.PNG)
+![Add Menu](./assets/images/add_screenshot.PNG)
 
-Save A New Note
+Update
 
-![Save Note](./assets/images/savenote_screenshot.PNG)
+![Update Menu](./assets/images/update_screenshot.PNG)
+
+Delete
+
+![Delete Menu](./assets/images/delete_screenshot.PNG)
 
 ## Installation
 
@@ -45,6 +45,26 @@ In order to install this application, your first step would be to clone the repo
 ```
 npm install
 ```
+
+You will also need to have mysql installed to your machine. Please refer to online documents to get mysql up and running (I used [this one](https://coding-boot-camp.github.io/full-stack/mysql/mysql-installation-guide)).
+
+Once mysql is successfully installed, and you are in the root of the project directory, please log into the database using:
+
+```
+mysql -u root -p
+```
+
+This will prompt you for the password you chose when you first installed mysql.
+Once you're in, please run the following commands in mysql:
+
+```
+source db/schema.sql;
+```
+```
+source db/seeds.sql;
+```
+
+You should be ready to go afterwards!
 
 ## Usage
 
