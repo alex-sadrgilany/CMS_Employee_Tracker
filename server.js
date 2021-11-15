@@ -1,6 +1,7 @@
 const db = require("./config/connection");
 const cTable = require("console.table");
 const inquirer = require("inquirer");
+const chalk = require("chalk");
 
 const startMenuQuestions = [
     {
@@ -27,7 +28,8 @@ const viewMenuQuestions = [
             "Roles",
             "All Employees",
             "Employees by Manager",
-            "Employees by Department"
+            "Employees by Department",
+            "Budget by Department"
         ]
     }
 ];
@@ -80,7 +82,7 @@ const addDepartmentQuestions = [
                 return true;
             }
             else {
-                return console.log("You must enter a department!");
+                return console.log(chalk.red("You must enter a department!"));
             }
         }
     }
@@ -127,6 +129,10 @@ const promptUserView = () => {
                     break;
                 case "Employees by Department":
                     viewByDept();
+                    break;
+                case "Budget by Department":
+                    viewBudgetByDept();
+                    break;
             };
         });
 };
@@ -243,8 +249,6 @@ const viewByManager = () => {
     db.query(sql, (err, data) => {
         if (err) throw err;
 
-        console.table(data);
-
         for (i = 0; i < data.length; i++) {
             let managerName = data[i].first_name + " " + data[i].last_name;
             managers.push(managerName);
@@ -310,10 +314,61 @@ const viewByDept = () => {
                                                                     FROM department
                                                                     WHERE name = "${answers.viewByDept}"))`;
 
-                db.query(sql, (err, rows) => {
+                db.query(sql, (err, data) => {
                     if (err) throw err;
 
-                    console.table(rows);
+                    if (data.length > 0) {
+                        console.table(data);
+                    }
+                    else {
+                        console.log(chalk.green("There are no employees currently in this department!"));
+                    }
+                    promptUser();
+                });
+            });
+    });
+};
+
+const viewBudgetByDept = () => {
+    let departments = [];
+    let sql = `SELECT * FROM department`;
+
+    db.query(sql, (err,data) => {
+        if (err) throw err;
+
+        for (i = 0; i < data.length; i++) {
+            departments.push(data[i].name);
+        };
+
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "viewByDept",
+                message: "Which department would you like to view budget by?",
+                choices: departments
+            }
+        ])
+            .then(answers => {
+                let sql = `SELECT id, 
+                            SUM(salary)
+                            FROM role
+                            WHERE department_id IN (SELECT id
+                                                    FROM department
+                                                    WHERE name = "${answers.viewByDept}")
+                            AND id IN (SELECT role_id
+                                        FROM employee)`;
+
+                db.query(sql, (err, data) => {
+                    if (err) throw err;
+
+                    console.log(data);
+
+                    if (data[0].id != null) {
+                        console.table(data);
+                    }
+                    else {
+                        console.log(chalk.green("There are currently no employee's in that department so the salary is $0!"));
+                    }
                     promptUser();
                 });
             });
@@ -329,7 +384,7 @@ const addDepartment = () => {
             db.query(sql, (err, data) => {
                 if (err) throw err;
 
-                console.log(`Your new department of ${answers.departmentName} has been added to the database!`);
+                console.log(chalk.green(`Your new department of ${answers.departmentName} has been added to the database!`));
                 promptUser();
             });
         });
@@ -357,7 +412,7 @@ const addRole = () => {
                     return true;
                 }
                 else {
-                    console.log("You must enter a role!");
+                    console.log(chalk.red("You must enter a role!"));
                 }
             }
         },
@@ -367,10 +422,10 @@ const addRole = () => {
             message: "What is the salary of the new Role?",
             validate: salaryInput => {
                 if (isNaN(salaryInput)) {
-                    console.log("You must enter an integer with a maximum of 8 digits plus 2 decimals if desired!");
+                    console.log(chalk.red("You must enter an integer with a maximum of 8 digits plus 2 decimals if desired!"));
                 }
                 else if (salaryInput > 99999999.99) {
-                    console.log("The maximum salary you can enter is 99999999.99!");
+                    console.log(chalk.red("The maximum salary you can enter is 99999999.99!"));
                 }
                 else {
                     return true;
@@ -398,7 +453,7 @@ const addRole = () => {
                 db.query(sql, (err, data) => {
                     if (err) throw (err);
 
-                    console.log(`Your new role has been added to the database with a title of ${answers.title}, salary of $${answers.salary}, and belonging to the department of ${answers.roleDepartment}`);
+                    console.log(chalk.green(`Your new role has been added to the database with a title of ${answers.title}, salary of $${answers.salary}, and belonging to the department of ${answers.roleDepartment}`));
 
                     promptUser();
                 });
@@ -439,7 +494,7 @@ const addEmployee = () => {
                     return true;
                 }
                 else {
-                    console.log("You must enter a first name!");
+                    console.log(chalk.red("You must enter a first name!"));
                 }
             }
         },
@@ -452,7 +507,7 @@ const addEmployee = () => {
                     return true;
                 }
                 else {
-                    console.log("You must enter a last name!");
+                    console.log(chalk.red("You must enter a last name!"));
                 }
             }
         },
@@ -485,7 +540,7 @@ const addEmployee = () => {
                     db.query(sql, (err, data) => {
                         if (err) throw err;
 
-                        console.log(`You have added ${answers.firstName} ${answers.lastName}, with a role of ${answers.employeeRole}, without a manager to the database!`);
+                        console.log(chalk.green(`You have added ${answers.firstName} ${answers.lastName}, with a role of ${answers.employeeRole}, without a manager to the database!`));
                         promptUser();
                     })
                 }
@@ -505,7 +560,7 @@ const addEmployee = () => {
                         db.query(sql, (err, data) => {
                             if (err) throw err;
 
-                            console.log(`You have added ${answers.employeeManager}, with a role of ${answers.employeeRole}, and a manager of to the database!`);
+                            console.log(chalk.green(`You have added ${answers.employeeManager}, with a role of ${answers.employeeRole}, and a manager of to the database!`));
                             promptUser();
                         });
                     });
@@ -567,7 +622,7 @@ const updateEmployeeRole = () => {
                         db.query(sql, (err, data) => {
                             if (err) throw err;
 
-                            console.log(`You have successfully updated ${answers.chooseEmployee}'s role to be ${answers.chooseRole}!`);
+                            console.log(chalk.green(`You have successfully updated ${answers.chooseEmployee}'s role to be ${answers.chooseRole}!`));
                             promptUser();
                         });
                     });
@@ -623,7 +678,7 @@ const updateEmployeeManager = () => {
                     db.query(sql, (err, data) => {
                         if (err) throw err;
 
-                        console.log(`You have successfully assigned ${answers.newEmployeeManager} a new manager of ${answers.assignedManager}!`);
+                        console.log(chalk.green(`You have successfully assigned ${answers.newEmployeeManager} a new manager of ${answers.assignedManager}!`));
                         promptUser();
                     });
                 });
@@ -657,7 +712,7 @@ const deleteDepartment = () => {
                 db.query(sql, (err, data) => {
                     if (err) throw err;
 
-                    console.log(`You have deleted the department of ${answers.deleteDpt} from the database!`);
+                    console.log(chalk.green(`You have deleted the department of ${answers.deleteDpt} from the database!`));
                     promptUser();
                 });
             });
@@ -690,7 +745,7 @@ const deleteRole = () => {
                 db.query(sql, (err, data) => {
                     if (err) throw err;
 
-                    console.log(`You have deleted the role of ${answers.deleteRole} from the database!`);
+                    console.log(chalk.green(`You have deleted the role of ${answers.deleteRole} from the database!`));
                     promptUser();
                 });
             });
@@ -726,14 +781,20 @@ const deleteEmployee = () => {
                 db.query(sql, (err, data) => {
                     if (err) throw err;
 
-                    console.log(`You have deleted ${answers.deleteEmp} from the database!`);
+                    console.log(chalk.green(`You have deleted ${answers.deleteEmp} from the database!`));
                     promptUser();
                 });
             });
     });
 };
 
+const goodbye = () => {
+    console.log(chalk.magenta("Thanks for using this employee tracker!")),
+    '\n';
+    console.log(chalk.magenta("Disconnecting from database now...Goodbye!"));
 
+    db.end();
+};
 
 promptUser();
 
